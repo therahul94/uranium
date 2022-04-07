@@ -3,14 +3,20 @@ const logger = require('./logger')
 
 const router = express.Router();
 
-router.get('/test-me', function (req, res) {
-    console.log('------------------')
-    console.log(req)
-    console.log('------------------')
-    console.log('These are the request query parameters: ', req.query)
-    res.send('My first ever api!')
+nameArr = ["abv","knsdn","al","slsk","nvn","oeou","jskj","nkjvdsnkh","ssfddfs","shfd"]
+
+router.get('/all-candidates', function (req, res) {
+    res.send(nameArr)
 });
 
+router.get('/candidates', function (req, res) {
+    let number = req.query.count
+    let resultArr = []
+    for (let i = 0; i<number; i++){
+        resultArr.push(nameArr[i])
+    }
+    res.send(resultArr)
+});
 
 
 
