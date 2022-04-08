@@ -22,16 +22,16 @@ router.get('/movies/:indexNumber', function(req, res){
 })
 
 let moviesArr = [ {
-    id: 1,
+    id: 103,
     name: 'The Shining'
    }, {
-    id: 2,
+    id: 22,
     name: 'Incendies'
    }, {
-    id: 3,
+    id: 367,
     name: 'Rang de Basanti'
    }, {
-    id: 4,
+    id: 408,
     name: 'Finding Nemo'
    }]
    
@@ -43,17 +43,18 @@ router.get('/films', function(req, res){
 // problem 5)
 
 router.get('/films/:filmId', function (req, res) {
-    let getId = req.params.filmId
+    let getId = req.params.filmId    //{filmId: 3}
 
-    if ((getId > 0) && (getId < 5)){
-        for (let i=0; i<moviesArr.length; i++){
-            if(moviesArr[i].id == getId){
-                res.send(moviesArr[i])
-            }
+    for (let i=0; i<moviesArr.length;i++){
+        if (getId == moviesArr[i].id){
+            res.send(moviesArr[i])
+        }
+        else{
+            count += 1
         }
     }
-    else{
-        res.send('No movie exists with this id')
+    if(count>0){
+        res.send("No movie exists with this id")
     }
 });
 
