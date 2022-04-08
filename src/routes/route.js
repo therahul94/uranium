@@ -44,7 +44,7 @@ router.get('/films', function(req, res){
 
 router.get('/films/:filmId', function (req, res) {
     let getId = req.params.filmId    //{filmId: 3}
-
+    let count = 0
     for (let i=0; i<moviesArr.length;i++){
         if (getId == moviesArr[i].id){
             res.send(moviesArr[i])
