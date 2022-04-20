@@ -1,25 +1,14 @@
-const UserModel= require("../models/userModel")
+
+const UserModel = require('../models/userModel')
 
 
+const basicDetails = function(req, res){
+    const token = req.headers.token
+    console.log (token)
+    console.log("I am inside the route handler.")
+    res.send("You are receiving this response from handler...")
 
-
-const basicCode= async function(req, res) {
-    let tokenDataInHeaders= req.headers.token
-    console.log(tokenDataInHeaders)
-
-    console.log( "HEADER DATA ABOVE")
-    console.log( "hey man, congrats you have reached the Handler")
-    res.send({ msg: "This is coming from controller (handler)"})
-    }
-
-
-
-
-
-
-
-
-
+}
 
 
 
@@ -43,4 +32,4 @@ const getUsersData= async function (req, res) {
 
 module.exports.createUser= createUser
 module.exports.getUsersData= getUsersData
-module.exports.basicCode= basicCode
+module.exports.basicDetails= basicDetails

@@ -75,3 +75,123 @@ time , IP, Route should be printed on each line in terminal( every time an api i
 2010-08-19 14:00:00 , 123.459.898.734 , /createUser
 2010-08-19 14:00:00 , 123.459.898.734 , /basicAPi
 2010-08-19 14:00:00 , 123.459.898.734 , /falanaAPI
+
+
+<!-- route.js -->
+const express = require('express');
+const router = express.Router();
+// const UserModel= require("../models/userModel.js")
+const UserController= require("../controllers/userController")
+const BookController= require("../controllers/bookController")
+const commonMW = require ("../middlewares/commonMiddlewares")
+
+router.get("/test-me", function (req, res) {
+    res.send("My first ever api!")
+})
+
+
+
+
+router.post("/createBook", BookController.createBook  )
+
+
+
+
+// router.post("/createUser", UserController.createUser  )
+// router.get("/getUsersData", UserController.getUsersData)
+
+
+// const mid1= function ( req, res, next) {
+//     console.log("Hi I am a middleware named Mid1")
+//     // logic
+//     let loggedIn = false
+
+//     if (loggedIn== true) { 
+//         console.log( "OK LOGGED IS IS TRUE NOW")
+//         next ()
+//     }
+//     else {
+//         res.send ("Please login or register")
+//     }
+// }
+
+// // e.g. restricted and open-to-all API's can be handled like below now:
+// router.get('/homePage', mid1, UserController.feeds)
+// router.get('/profileDetails', mid1, UserController.profileDetails)
+// router.get('/friendList', mid1, UserController.friendList)
+// router.get('/changePassword', mid1, UserController.changePassword)
+
+// router.get('/termsAndConditions',  UserController.termsAndConditions)
+// router.get('/register',  UserController.register)
+
+
+
+
+
+router.get("/basicRoute", commonMW.mid1, commonMW.mid2, commonMW.mid3, commonMW.mid4, UserController.basicCode)
+
+
+
+// router.get("/basicRoute2", commonMW.mid1, UserController.basicCode2)
+// router.get("/basicRoute3", commonMW.mid2, UserController.basicCode3)
+// router.get("/basicRoute4", commonMW.mid1, commonMW.mid4, UserController.basicCode4)
+
+
+
+
+module.exports = router;
+
+<!-- index.js -->
+
+app.use (
+    function (req, res, next) {
+        console.log ("inside GLOBAL MW");
+        next();
+  }
+  );
+
+<!-- commonMiddleware.js -->
+
+const mid1= function ( req, res, next) {
+    req.falana= "hi there. i am adding something new to the req object"
+    console.log("Hi I am a middleware named Mid1")
+    next()
+}
+
+const mid2= function ( req, res, next) {
+    console.log("Hi I am a middleware named Mid2")
+    next()
+}
+
+const mid3= function ( req, res, next) {
+    console.log("Hi I am a middleware named Mid3")
+    next()
+}
+
+const mid4= function ( req, res, next) {
+    console.log("Hi I am a middleware named Mid4")
+    next()
+}
+
+module.exports.mid1= mid1
+module.exports.mid2= mid2
+module.exports.mid3= mid3
+module.exports.mid4= mid4
+
+
+<!-- userController.js -->
+
+const UserModel= require("../models/userModel")
+
+
+
+
+const basicCode= async function(req, res) {
+    let tokenDataInHeaders= req.headers.token
+    console.log(tokenDataInHeaders)
+
+    console.log( "HEADER DATA ABOVE")
+    console.log( "hey man, congrats you have reached the Handler")
+    res.send({ msg: "This is coming from controller (handler)"})
+    }
+
