@@ -1,90 +1,89 @@
-const jwt = require("jsonwebtoken");
-const userModel = require("../models/userModel");
+const userModel = require('../models/userModel')
+const jwt = require('jsonwebtoken')
 
-const createUser = async function (abcd, xyz) {
-  //You can name the req, res objects anything.
-  //but the first parameter is always the request 
-  //the second parameter is always the response
-  let data = abcd.body;
-  let savedData = await userModel.create(data);
-  console.log(abcd.newAtribute);
-  xyz.send({ msg: savedData });
-};
+const createUser = async function (req, res) {
 
-const loginUser = async function (req, res) {
-  let userName = req.body.emailId;
-  let password = req.body.password;
+  try {
+    let Data = req.body
+    if (Object.keys(Data).length) {
+      // let isUserExist = await userModel.exists(Data)
 
-  let user = await userModel.findOne({ emailId: userName, password: password });
-  if (!user)
-    return res.send({
-      status: false,
-      msg: "username or the password is not corerct",
-    });
+      let savedData = await userModel.create(Data)
+      return res.status(201).send({ status: true, Data: savedData })
 
-  // Once the login is successful, create the jwt token with sign function
-  // Sign function has 2 inputs:
-  // Input 1 is the payload or the object containing data to be set in token
-  // The decision about what data to put in token depends on the business requirement
-  // Input 2 is the secret
-  // The same secret will be used to decode tokens
-  let token = jwt.sign(
-    {
-      userId: user._id.toString(),
-      batch: "thorium",
-      organisation: "FUnctionUp",
-    },
-    "functionup-thorium"
-  );
-  res.setHeader("x-auth-token", token);
-  res.send({ status: true, data: token });
-};
-
-const getUserData = async function (req, res) {
-  let token = req.headers["x-Auth-token"];
-  if (!token) token = req.headers["x-auth-token"];
-
-  //If no token is present in the request header return error
-  if (!token) return res.send({ status: false, msg: "token must be present" });
-
-  console.log(token);
-  
-  // If a token is present then decode the token with verify function
-  // verify takes two inputs:
-  // Input 1 is the token to be decoded
-  // Input 2 is the same secret with which the token was generated
-  // Check the value of the decoded token yourself
-  let decodedToken = jwt.verify(token, "functionup-thorium");
-  if (!decodedToken)
-    return res.send({ status: false, msg: "token is invalid" });
-
-  let userId = req.params.userId;
-  let userDetails = await userModel.findById(userId);
-  if (!userDetails)
-    return res.send({ status: false, msg: "No such user exists" });
-
-  res.send({ status: true, data: userDetails });
-};
-
-const updateUser = async function (req, res) {
-// Do the same steps here:
-// Check if the token is present
-// Check if the token present is a valid token
-// Return a different error message in both these cases
-
-  let userId = req.params.userId;
-  let user = await userModel.findById(userId);
-  //Return an error if no user with the given id exists in the db
-  if (!user) {
-    return res.send("No such user exists");
+    }
+    else {
+      return res.status(400).send({ status: false, msg: "ERROR!!! fill all fields." })
+    }
+  }
+  catch (err) {
+    res.status(500).send({ msg: err.message })
   }
 
-  let userData = req.body;
-  let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData);
-  res.send({ status: updatedUser, data: updatedUser });
-};
 
-module.exports.createUser = createUser;
-module.exports.getUserData = getUserData;
-module.exports.updateUser = updateUser;
-module.exports.loginUser = loginUser;
+}
+
+const userLogin = async function (req, res) {
+
+  try {
+    let userEmailId = req.body.emailId
+    let userPassword = req.body.password
+
+    let user = await userModel.findOne({ emailId: userEmailId, password: userPassword })
+    
+    //If user leaves the block empty then also it didnot find the values in userEmailId and userPassword so findOne() will give the null value to the user variable and then the condition if(!user) will become true and shows that something went wrong.
+    if (!user) {
+      return res.status(400).send({ status: false, msg: "something went wrong try again..." })
+    }
+
+    let token = jwt.sign({
+      userId: user._id.toString(),
+      name: user.firstName
+    }, "jamesBond")
+
+    return res.status(200).send({ status: true, token: token })
+  }
+  catch (err) {                            // catch block will only run when there is some error in server side
+    res.status(500).send({ msg: err.message })
+  }
+}
+
+
+
+const userDetails = async function (req, res) {
+
+  try {
+
+    let userId = req.params.userId
+    let userDetails = await userModel.findById(userId)
+    return res.status(200).send({ status: true, details: userDetails })
+
+  }
+  catch (err) {
+    res.status(500).send({ msg: err.message })
+  }
+}
+
+const updateDetails = async function (req, res) {
+
+  let userId = req.params.userId
+  let updated = req.body
+
+  let updatedValue = await userModel.findOneAndUpdate({ _id: userId }, { $set: updated }, { new: true })
+  res.status(200).send({ status: true, updatedDetails: updatedValue })
+
+}
+
+const deleteUser = async function (req, res) {
+  let userId = req.params.userId
+  let deletedUser = await userModel.findOneAndUpdate({ _id: userId }, { $set: { isDeleted: true } }, { new: true })
+  res.send({ status: true, deletedAccount: deletedUser })
+}
+
+module.exports.createUser = createUser
+module.exports.userLogin = userLogin
+module.exports.userDetails = userDetails
+module.exports.updateDetails = updateDetails
+module.exports.deleteUser = deleteUser
+
+
