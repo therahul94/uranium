@@ -14,9 +14,10 @@ const orderDetails = async function (req, res){
         let Data = req.body
         let savedData = await orderModel.create(Data)
         let updatedOrder = null
+
         // console.log(req['isFreeAppUser'])
-        if(req['isFreeAppUser'] == 'true'){
-            updatedOrder =  await orderModel.findOneAndUpdate({},{$set: {amount: 0, isFreeAppUser: true}})
+        if( req['isFreeAppUser'] ){
+            updatedOrder =  await orderModel.findOneAndUpdate({userId: userId , productId: productId},{$set: {amount: 0, isFreeAppUser: true}},{new: true}).populate('userId')
             res.send(updatedOrder)
         }
         else{
@@ -29,8 +30,9 @@ const orderDetails = async function (req, res){
             else{
                 let deductedValue = userBalance-productPrice
                 let updatedUser = await userModel.findOneAndUpdate({_id:userId},{$set: {balance: deductedValue}})
-                updatedOrder = await orderModel.findOneAndUpdate({},{$set: {amount: productPrice, isFreeAppUser: false}},{new: true})
+                updatedOrder = await orderModel.findOneAndUpdate({userId: userId},{$set: {amount: productPrice, isFreeAppUser: false}},{new: true}).populate('userId')
                 res.send(updatedOrder)
+                
             }
         }
 
