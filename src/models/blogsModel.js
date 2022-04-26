@@ -19,27 +19,27 @@ const blogsSchema = new mongoose.Schema({
         type: [String]
     },
     category: {
-        type: [string],
+        type: [String],
         required: true
     },
     subcategory: {
-        type: [string],
+        type: [String],
         required: true
     },
     deletedAt: {
-        type: String,
+        type: Date
     },
     isDeleted: {
-        type: boolean,
+        type: Boolean,
         default: false
     },
     publishedAt: {
-        type: String,
+        type: Date
     },
     isPublished: {
-        type: boolean,
+        type: Boolean,
         default: false
     }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Project32Blogs', blogsSchema)
+module.exports = mongoose.model('Rahul32Blogs', blogsSchema)

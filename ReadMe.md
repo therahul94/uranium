@@ -1,7 +1,4 @@
-const { default: mongoose } = require("mongoose");
-
-const authorSchema = new mongoose.Schema({
-    fname: {
+fname: {
         type: String,
         required: true
     },
@@ -23,6 +20,3 @@ const authorSchema = new mongoose.Schema({
         type: String,
         required: true,
     }
-}, { timestamps: true })
-
-module.exports = mongoose.model('Rahul32Author', authorSchema)
