@@ -18,6 +18,7 @@ const mid1 = async function(req, res, next){
         return res.status().send({status: false, msg: "Token is not Valid."})
     }
 
+    req.headers.authorId = decodeToken.authorId
     // let authorToBeModified = req.params.authorId
 
     // let authorLoggedIn = decodeToken.authorId

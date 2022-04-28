@@ -119,10 +119,15 @@ let deletedUsingQueryParams = async function (req, res) {
         let deleteData = req.query;
         console.log(deleteData)
 
-        let authorToBeModified = req.query.authorId
+        if (Object.keys(deleteData).length === 0){
+            return res.send({status: false, msg: "ERROR"})
+        }
+
+        let authId = req.headers.authorId
+        console.log(authId)
 
         let delData = await blogsModel.updateMany(
-            { $and:[deleteData, { isDeleted: false }, {authorId: authorToBeModified}] }, 
+            { $and:[deleteData, { isDeleted: false }, {authorId: authId}] }, 
             { isDeleted: true, deletedAt: new Date() }, 
             { new: true }
         )
