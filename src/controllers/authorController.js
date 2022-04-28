@@ -1,4 +1,6 @@
 const authorModel = require('../models/authorModel')
+const validator = require('email-validator')
+const jwt = require('jsonwebtoken')
 
 const createAuthor = async function (req, res) {
 
@@ -8,6 +10,12 @@ const createAuthor = async function (req, res) {
         if (!(fname && lname && title && email && password)) {
             return res.status(400).send({ status: false, data: "All fields are required" })
         }
+
+        let validEmailFormat = validator.validate(email)
+        if(!validEmailFormat){
+            return res.status(400).send({status: false, msg: "Invalid Email"})
+        }
+
         let validEmail = await authorModel.findOne({ email: email })
 
         if (validEmail) {
@@ -19,9 +27,36 @@ const createAuthor = async function (req, res) {
         return res.status(201).send({ status: true, data: dataAuthor })
     } 
     catch (err) {
-        return res.status(500).send({ status: false, err: err })
+        return res.status(500).send({ status: false, err: err.message })
     }
 
 }
 
+const loginAuthor = async function(req, res){
+    let {email, password} = req.body
+
+    if(!(email && password)){
+        return res.status(400).send({status: false, msg: "Please fill all fields"})
+    }
+
+    let validEmailFormat = validator.validate(email)
+    if(!validEmailFormat){
+        return res.status(400).send({status: false, msg: "Invalid Email"})
+    }
+
+    //If there is no document present the findOne will return null.
+    let validAuthor = await authorModel.findOne({email: email, password: password}) 
+
+    if(!validAuthor){
+        return res.status(400).send({status: false, msg: "Please SignUp first"})
+    }
+    
+
+    let token = jwt.sign({authorId: validAuthor._id.toString()}, 'functionUpgroupnumber32');
+
+    return res.status(200).send({status: true, msg: token})
+    
+}
+
 module.exports.createAuthor = createAuthor
+module.exports.loginAuthor = loginAuthor

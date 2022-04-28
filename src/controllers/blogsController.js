@@ -27,7 +27,7 @@ const createBlogs = async function (req, res) {
         return res.status(201).send({ status: true, data: dataBlogs })
     }
     catch (err) {
-        return res.status(500).send({ status: false, err: err })
+        return res.status(500).send({ status: false, err: err.message })
     }
 
 }
@@ -45,7 +45,7 @@ const getBlogs = async function (req, res) {
         }
 
         return res.status(200).send({ status: true, data: allBlogs })
-        
+
     }
     catch (err) {
         res.status(500).send({ status: false, msg: err.message })
@@ -118,14 +118,17 @@ let deletedUsingQueryParams = async function (req, res) {
 
         let deleteData = req.query;
         console.log(deleteData)
+
+        let authorToBeModified = req.query.authorId
+
         let delData = await blogsModel.updateMany(
-            { $and:[deleteData, { isDeleted: false }] }, 
+            { $and:[deleteData, { isDeleted: false }, {authorId: authorToBeModified}] }, 
             { isDeleted: true, deletedAt: new Date() }, 
             { new: true }
         )
 
         if (delData.matchedCount == 0) {
-            return res.status(404).send({ status: false, msg: "Document is not Exists" })
+            return res.status(404).send({ status: false, msg: "Document Doesn't Exists" })
         }
 
         return res.status(200).send({ status: true, msg: delData })

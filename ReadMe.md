@@ -20,3 +20,11 @@ fname: {
         type: String,
         required: true,
     }
+
+
+
+Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JJZCI6IjYyNjgzM2EyMzZlNzE4OWJjOTQ0NDljYyIsImlhdCI6MTY1MTEzMzE4N30.wA_1uUf-HuTmLVrgMPIVyu4DPH8zveexrgyA1wrT88E
+{
+    "email": "chetan@gmail.com",
+    "password": "password345"
+}

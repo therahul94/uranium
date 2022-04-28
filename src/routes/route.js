@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const authorController = require('../controllers/authorController')
 const blogsController = require('../controllers/blogsController')
+const authenticateMW = require('../middlewares/authenticateMid')
+const authorizeMW = require('../middlewares/authorizeMid')
 
 router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
@@ -11,22 +13,22 @@ router.get("/test-me", function (req, res) {
 router.post("/createAuthor", authorController.createAuthor)
 
 //2)
-router.post("/blogs", blogsController.createBlogs)
+router.post("/blogs", authenticateMW.mid1, blogsController.createBlogs)
 
 //3)
-router.get("/blogs", blogsController.getBlogs)
+router.get("/blogs",authenticateMW.mid1, blogsController.getBlogs)
 
 //4)
-router.put("/blogs/:blogId", blogsController.updateBlogs)
+router.put("/blogs/:blogId",authorizeMW.authrAuth, blogsController.updateBlogs)
 
 
 //5)
-router.delete("/blogs/:blogId", blogsController.deletedBlogs)
+router.delete("/blogs/:blogId",authorizeMW.authrAuth, blogsController.deletedBlogs)
 
 // 6)
-router.delete("/blogs", blogsController.deletedUsingQueryParams)
+router.delete("/blogs",authorizeMW.authrAuth, blogsController.deletedUsingQueryParams)
 
-
-// router.
+//7)
+router.post("/login", authorController.loginAuthor)
 
 module.exports = router;
