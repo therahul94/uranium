@@ -38,18 +38,18 @@ const getAllMemes = async function (req, res) {
 const createMemes = async function (req, res) {
     try {
         let template_id = req.query.memeId
-        let text0 = req.query.textLeft
-        let text1 = req.query.textRight
+        let text0 = req.query.text0
+        let text1 = req.query.text1
         let username = req.query.name
         let password = req.query.pswd
-        let extra = req.query.extra
+        
 
         let options = {
             method: "post",
-            url: `https://api.imgflip.com/caption_image?template_id=${template_id}&text0=${text0}&text1=${text1}&extra=${extra}&username=${username}&password=${password}`
+            url: `https://api.imgflip.com/caption_image?template_id=${template_id}&text0=${text0}&text1=${text1}&username=${username}&password=${password}`
         }
         let result = await axios(options)
-        let data = result.data
+        let data = result.data.data
         res.status(200).send({ data: data })
     }
     catch (err) {

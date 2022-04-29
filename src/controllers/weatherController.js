@@ -44,6 +44,7 @@ let tempWiseSort = async function (req, res) {
             citiesWithTempArr.push({ city: data.name, temp: temp })
 
         }
+        console.log(citiesWithTempArr)
 
         function compare(a, b) {
             if (a.temp > b.temp) { return 1 }
